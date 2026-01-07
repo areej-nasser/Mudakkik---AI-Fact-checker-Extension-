@@ -8,7 +8,10 @@ export async function verifyNews(content, token) {
             "Accept": "application/json",
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ "text": content })
+        body: JSON.stringify({
+            "text": content,
+            "period": 365
+        })
     });
 
     if (!res.ok) throw new Error("API failed" + " " + res);
