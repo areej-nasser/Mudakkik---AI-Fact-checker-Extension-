@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "AI Fact Checker",
+  "name": "Mudakkik AI Fact Checker",
   "version": "1.0",
-  "description": "Fact-check selected text using Tavily search and Groq AI",
+  "description": "Fact-check selected text on the web using AI and trusted news sources.",
   "permissions": ["activeTab", "contextMenus", "storage", "scripting"],
   "host_permissions": ["https://mudakkik.ddns.net/api/*"],
   "background": {
