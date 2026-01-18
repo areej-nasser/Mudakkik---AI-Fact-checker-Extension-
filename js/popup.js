@@ -29,7 +29,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             renderResults(res.text.trim(), data.result);
         } catch (e) {
             hideLoading();
-            showError(e.message);
+            if (e.message.includes("Unauthenticated") || e.message === "Unauthenticated") {
+                await clearAuth();
+                showAuth();
+                showError("جلسة منتهية، يرجى إعادة تسجيل الدخول");
+            } else {
+                showError(e.message);
+            }
         }
     });
 });
@@ -66,26 +72,34 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
 
 /* ---------- FACT CHECK ---------- */
 document.getElementById("checkBtn").addEventListener("click", async () => {
-    try {
-        const token = await getToken();
-        if (!token) return showError("Please login first");
+    const token = await getToken();
+    if (!token) return showError("يجب تسجيل الدخول أولاً");
 
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        chrome.tabs.sendMessage(tab.id, { action: "getSelectedText" }, async (res) => {
+    showLoading();
 
-            if (!res?.text) return showError("Please refresh the page or select text first");
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    chrome.tabs.sendMessage(tab.id, { action: "getSelectedText" }, async (res) => {
+        try {
+            if (!res?.text) {
+                hideLoading();
+                return showError("يرجى تحديد نص أولاً أو تحديث الصفحة");
+            }
 
-            showLoading();
             const period = parseInt(document.getElementById("periodSelect").value);
             const data = await verifyNews(res.text, token, period);
             hideLoading();
             renderResults(res.text, data.result);
-        });
-
-    } catch (e) {
-        hideLoading();
-        showError(e.message);
-    }
+        } catch (e) {
+            hideLoading();
+            if (e.message.includes("Unauthenticated") || e.message.includes("Unauthenticated") || e.message === "Unauthenticated") {
+                await clearAuth();
+                showAuth();
+                showError("جلسة منتهية، يرجى إعادة تسجيل الدخول");
+            } else {
+                showError(e.message);
+            }
+        }
+    });
 });
 
 

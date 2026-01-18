@@ -373,39 +373,43 @@ async function handleVerifyClick() {
   const { token } = await chrome.storage.local.get('token');
 
   if (!token) {
-    content.innerHTML = `
-            <div class="login-prompt">
-                <p style="color: #64748b; margin-bottom: 8px;">يجب تسجيل الدخول أولاً</p>
-                <a href="https://mudakkik.ddns.net/login" target="_blank" class="login-btn">تسجيل الدخول</a>
-            </div>
-        `;
+    showLoginPrompt(content);
     return;
   }
 
   try {
-    const res = await fetch(`${API_URL}/verify-news`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        text: selectedText,
-        period: 3
-      })
+    const response = await chrome.runtime.sendMessage({
+      action: 'verifyNews',
+      text: selectedText,
+      token: token,
+      period: 3
     });
 
-    if (!res.ok) {
-      throw new Error(res.status === 401 ? 'جلسة منتهية، يرجى إعادة تسجيل الدخول' : 'فشل في التحقق');
+    if (!response.success) {
+      if (response.status === 401) {
+        await chrome.storage.local.remove('token');
+        showLoginPrompt(content, "جلسة منتهية، يرجى إعادة تسجيل الدخول");
+        return;
+      }
+      throw new Error(response.message || 'فشل في التحقق');
     }
 
-    const data = await res.json();
-    renderResult(data.result);
+    renderResult(response.data.result);
 
   } catch (error) {
     content.innerHTML = `<div class="error-msg">${error.message}</div>`;
   }
+}
+
+function showLoginPrompt(container, message = "يجب تسجيل الدخول أولاً") {
+  container.innerHTML = `
+        <div class="login-prompt">
+            <p style="color: #64748b; margin-bottom: 12px; font-weight: 500;">${message}</p>
+            <a href="${API_URL.replace('/api', '/login')}" target="_blank" class="login-btn">
+                تسجيل الدخول
+            </a>
+        </div>
+    `;
 }
 
 // ===== Render Result =====

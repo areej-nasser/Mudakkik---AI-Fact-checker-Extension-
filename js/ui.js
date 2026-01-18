@@ -16,11 +16,15 @@ export function showApp() {
 }
 
 export function showLoading() {
+    const checkBtn = document.getElementById("checkBtn");
+    if (checkBtn) checkBtn.style.display = "none";
     loading.style.display = "flex";
     results.classList.add("hidden");
 }
 
 export function hideLoading() {
+    const checkBtn = document.getElementById("checkBtn");
+    if (checkBtn) checkBtn.style.display = "flex";
     loading.style.display = "none";
 }
 
@@ -92,12 +96,22 @@ export function renderResults(text, data) {
 
     if (data.sources && data.sources.length > 0) {
         data.sources.forEach(src => {
-            const a = document.createElement("a");
-            a.href = src.url;
-            a.textContent = src.title || new URL(src.url).hostname;
-            a.target = "_blank";
-            a.rel = "noopener noreferrer";
-            sourcesDiv.appendChild(a);
+            const sourceItem = document.createElement("div");
+            sourceItem.className = "source-item";
+
+            const domain = new URL(src.url).hostname.replace('www.', '');
+            const date = src.date ? new Date(src.date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+
+            sourceItem.innerHTML = `
+                <a href="${src.url}" target="_blank" rel="noopener noreferrer">
+                    ${src.title || domain}
+                </a>
+                <div class="source-meta">
+                    <span class="source-domain">${domain}</span>
+                    ${date ? `<span class="source-date">${date}</span>` : ''}
+                </div>
+            `;
+            sourcesDiv.appendChild(sourceItem);
         });
     } else {
         const noSources = document.createElement("p");

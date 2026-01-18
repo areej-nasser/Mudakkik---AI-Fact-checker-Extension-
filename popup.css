@@ -471,27 +471,50 @@ input::placeholder {
   border-bottom: 2px solid var(--brand-red);
 }
 
-.sources a {
-  display: block;
+.source-item {
   padding: 12px 14px;
-  font-size: 14px;
   border-radius: 10px;
   border: 1px solid var(--border);
-  text-decoration: none;
-  color: var(--text);
-  font-weight: 600;
   margin-bottom: 8px;
   background: #f8fafc;
   transition: all 0.2s ease;
+}
+
+.source-item:hover {
+  background: #f1f5f9;
+  border-color: var(--brand-blue);
+}
+
+.source-item a {
+  display: block;
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 6px;
 }
 
-.sources a:hover {
-  background: var(--brand-blue);
-  color: white;
-  border-color: var(--brand-blue);
+.source-item a:hover {
+  color: var(--brand-blue);
+}
+
+.source-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.source-domain {
+  color: var(--brand-blue);
+  font-weight: 500;
+}
+
+.source-date {
+  color: var(--muted);
 }
 
 /* ===== Error ===== */
