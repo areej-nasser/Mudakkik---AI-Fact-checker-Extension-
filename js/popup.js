@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             showLoading();
             const token = await getToken();
-            const data = await verifyNews(res.text.trim(), token);
+            const period = parseInt(document.getElementById("periodSelect").value);
+            const data = await verifyNews(res.text.trim(), token, period);
 
             hideLoading();
             renderResults(res.text.trim(), data.result);
@@ -75,7 +76,8 @@ document.getElementById("checkBtn").addEventListener("click", async () => {
             if (!res?.text) return showError("Please refresh the page or select text first");
 
             showLoading();
-            const data = await verifyNews(res.text, token);
+            const period = parseInt(document.getElementById("periodSelect").value);
+            const data = await verifyNews(res.text, token, period);
             hideLoading();
             renderResults(res.text, data.result);
         });

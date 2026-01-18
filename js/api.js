@@ -1,6 +1,6 @@
 const API_URL = "https://mudakkik.ddns.net/api";
 
-export async function verifyNews(content, token) {
+export async function verifyNews(content, token, period = 3) {
     const res = await fetch(`${API_URL}/verify-news`, {
         method: "POST",
         headers: {
@@ -10,7 +10,7 @@ export async function verifyNews(content, token) {
         },
         body: JSON.stringify({
             "text": content,
-            "period": 365
+            "period": period
         })
     });
 

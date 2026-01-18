@@ -2,7 +2,7 @@
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
         id: 'factCheck',
-        title: 'Fact Check "%s"',
+        title: 'تحقق من "%s" مع مُدَقِّق',
         contexts: ['selection']
     });
 });
